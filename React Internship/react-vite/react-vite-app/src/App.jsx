@@ -1,25 +1,40 @@
 import { Routes, Route } from "react-router-dom";
-import NavBar from "./components/NavBar";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import NoPage from "./pages/NoPage";
 import SharedLayout from "./layout/SharedLayout";
+import Home from "./pages/Home";
+import React, {Suspense} from "react";
+
+const About = React.lazy(()=> import ("./pages/About"));  // React.lazy only works with default
+const Contact = React.lazy(()=> import("./pages/Contact"));
+const NoPage = React.lazy(()=> import("./pages/NoPage"));
 
 const App = () => {
   return (
     <div className="min-h-screen">
-      <NavBar />
-      <main className="p-4">
         <Routes>
           <Route path="/" element={<SharedLayout />}>
+            
             <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="*" element={<NoPage />} />
+
+            <Route path="about" element={
+              <Suspense fallback="....Loading">
+                <About />
+              </Suspense>
+            } />
+
+            <Route path="contact" element={
+              <Suspense fallback="....Loading">
+                <Contact />
+              </Suspense>
+            } />
+
+            <Route path="*" element={
+              <Suspense fallback="....Loading">
+                <NoPage />
+              </Suspense>
+            } />
+
           </Route>
         </Routes>
-      </main>
     </div>
   );
 };
