@@ -1,25 +1,14 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import NewsCard from "../components/NewsCard";
+import useFetch from "../hooks/GetAPI";
 
-const NewsFeed = () => {
-  const [articles, setArticles] = useState([]);  // Initially no article
-
+const NewsFeed = () => {  
   const API_URL = import.meta.env.VITE_API_URL;
-
-  useEffect(() => {
-    const fetchNews = async () => {
-      try { 
-        const res = await axios.get(API_URL);
-        setArticles(res.data.articles);
-      } catch (error) {
-        console.error("Failed to fetch news:", error);
-      }
-    };
-
-    fetchNews();
-  }, []);
-
+  
+  const { data: articles, loading, error } = useFetch(API_URL);
+   
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
       {articles.map((article, index) => (
